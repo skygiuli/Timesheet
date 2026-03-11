@@ -8,7 +8,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { background: #f0ebff; font-family: 'Roboto', sans-serif; padding-bottom: 3rem; }
-
     .title-card {
       max-width: 640px; margin: 0 auto 10px; background: #fff;
       border-top: 8px solid #673ab7; border-radius: 0 0 8px 8px;
@@ -17,29 +16,24 @@
     .title-card h1 { font-size: 1.7rem; font-weight: 400; color: #202124; margin-bottom: 6px; }
     .title-card p { color: #5f6368; font-size: 0.95rem; }
     .required-note { color: #d93025; font-size: 0.8rem; margin-top: 10px; }
-
     .card {
       max-width: 640px; margin: 0 auto 10px; background: #fff;
       border-radius: 8px; padding: 20px 24px;
       box-shadow: 0 1px 3px rgba(0,0,0,0.12);
     }
     .card h3 { font-size: 1rem; font-weight: 500; color: #202124; margin-bottom: 16px; }
-
     label { display: block; font-size: 0.85rem; color: #202124; margin-bottom: 6px; }
     .field-group { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 16px; }
-
-    input[type="text"], input[type="number"], select, textarea {
+    input[type="text"], input[type="number"], textarea {
       width: 100%; border: none; border-bottom: 2px solid #dadce0;
       padding: 6px 0; font-size: 0.95rem; color: #202124;
       outline: none; background: transparent; font-family: 'Roboto', sans-serif;
       transition: border-color 0.2s;
     }
-    input:focus, select:focus, textarea:focus { border-bottom-color: #673ab7; }
+    input:focus, textarea:focus { border-bottom-color: #673ab7; }
     textarea { resize: none; height: 36px; }
-
     .error-msg { color: #d93025; font-size: 0.78rem; margin-top: 4px; display: none; }
     .error-msg.show { display: block; }
-
     .submit-card {
       max-width: 640px; margin: 0 auto; background: #fff;
       border-radius: 8px; padding: 20px 24px;
@@ -48,7 +42,6 @@
     }
     .total-label { font-size: 0.85rem; color: #5f6368; margin-bottom: 4px; }
     .total-hours { font-size: 1.5rem; font-weight: 500; color: #673ab7; }
-
     button {
       background: #673ab7; color: #fff; border: none;
       border-radius: 4px; padding: 10px 24px;
@@ -56,7 +49,6 @@
       font-family: 'Roboto', sans-serif; transition: background 0.2s;
     }
     button:hover { background: #512da8; }
-
     #success {
       display: none; min-height: 100vh; background: #f0ebff;
       align-items: center; justify-content: center;
@@ -89,15 +81,12 @@
     <p id="week-range"></p>
     <p class="required-note">* Required</p>
   </div>
-
   <div class="card">
     <label>Your Name *</label>
     <input type="text" id="employee-name" placeholder="Your answer" />
     <div class="error-msg" id="name-error">This is a required question</div>
   </div>
-
   <div id="days-container"></div>
-
   <div class="submit-card">
     <div>
       <div class="total-label">Total hours this week</div>
@@ -182,7 +171,7 @@
 
     DAYS.forEach((_, i) => {
       const hrs = document.getElementById(`hours-${i}`).value;
-      const job = document.getElementById(`job-${i}`).value.trim();
+      const job = document.getElementById(`job-${i}`).value;
       const jobErr = document.getElementById(`job-error-${i}`);
       if (hrs && !job) { jobErr.classList.add("show"); hasError = true; }
       else { jobErr.classList.remove("show"); }
@@ -207,6 +196,33 @@
 
     document.getElementById("summary-rows").innerHTML = rows;
     document.getElementById("summary-total").textContent = total + " hrs";
+
+    const payload = {
+      name: name,
+      week: document.getElementById("week-range").textContent,
+      mon_hours: document.getElementById("hours-0").value || "",
+      mon_job: document.getElementById("job-0").value || "",
+      tue_hours: document.getElementById("hours-1").value || "",
+      tue_job: document.getElementById("job-1").value || "",
+      wed_hours: document.getElementById("hours-2").value || "",
+      wed_job: document.getElementById("job-2").value || "",
+      thu_hours: document.getElementById("hours-3").value || "",
+      thu_job: document.getElementById("job-3").value || "",
+      fri_hours: document.getElementById("hours-4").value || "",
+      fri_job: document.getElementById("job-4").value || "",
+      sat_hours: document.getElementById("hours-5").value || "",
+      sat_job: document.getElementById("job-5").value || "",
+      sun_hours: document.getElementById("hours-6").value || "",
+      sun_job: document.getElementById("job-6").value || ""
+    };
+
+    fetch("https://script.google.com/macros/s/AKfycbzzzSLkcMS_4ePei4XKyNTG-E3HgfDAu_fL4qym4vzalHlvcqLA-DsDltuySNDQHn_p/exec", {
+      method: "POST",
+      mode: "no-cors",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    }).catch(() => {});
+
     document.getElementById("form-wrapper").style.display = "none";
     const s = document.getElementById("success");
     s.style.display = "flex";
